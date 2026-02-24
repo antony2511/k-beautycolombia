@@ -1,0 +1,103 @@
+// Prisma Schema para K-Beauty Ecommerce
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            String      @id @default(cuid())
+  name          String
+  brand         String
+  price         Float
+  compareAtPrice Float?
+  image         String      @db.Text
+  images        Json?       // Array de URLs de imágenes
+  badge         String?
+  badgeType     String?
+  category      String?
+  description   String?     @db.Text
+  benefits      Json?       // Array de strings
+  ingredients   Json?       // Array de strings
+  howToUse      Json?       // Array de strings
+  skinType      Json?       // Array de strings
+  stock         Int         @default(0)
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  orderItems    OrderItem[]
+
+  @@index([category])
+  @@index([brand])
+  @@index([isActive])
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+
+  // Cliente
+  customerEmail   String
+  customerName    String
+  customerPhone   String?
+  customerDocument Json?   // {type, number}
+
+  // Montos
+  subtotal        Float
+  discount        Float    @default(0)
+  shipping        Float    @default(0)
+  total           Float
+
+  // Estado
+  status          String   @default("pending") // pending, processing, shipped, delivered, cancelled
+  paymentStatus   String   @default("pending") // pending, paid, failed, refunded
+  paymentMethod   String?  // stripe, wompi, etc
+  paymentId       String?
+
+  // Dirección de envío
+  shippingAddress Json     // {fullName, address, city, state, zipCode, phone, instructions}
+
+  // Tracking
+  trackingNumber  String?
+  notes           String?  @db.Text
+  statusHistory   Json?    // Array de {status, timestamp, notes, changedBy}
+
+  // Items
+  items           OrderItem[]
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([customerEmail])
+  @@index([status])
+  @@index([createdAt])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+
+  name        String
+  price       Float
+  quantity    Int
+  subtotal    Float
+
+  // Snapshot de datos del producto al momento de la compra
+  image       String?
+  brand       String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}

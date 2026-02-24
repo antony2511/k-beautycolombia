@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nuestra Historia K-Beauty</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        // Custom Palette from user prompt
+                        "brand-bg": "#FBE0C3",
+                        "brand-text": "#344648",
+                        "brand-accent": "#7D8E95",
+                        "brand-footer": "#344648",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Newsreader", "serif"], // Overriding sans to force serif look as requested for editorial feel
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar to match the elegant theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FBE0C3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7D8E95;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #344648;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg font-display text-brand-text antialiased selection:bg-brand-accent/30 selection:text-brand-text">
+<!-- Navigation -->
+<nav class="fixed w-full z-50 bg-brand-bg/90 backdrop-blur-md border-b border-brand-text/10 transition-all duration-300">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-20">
+<!-- Logo -->
+<div class="flex-shrink-0 flex items-center gap-2">
+<span class="material-icons text-brand-text text-3xl">spa</span>
+<span class="font-display font-semibold text-2xl tracking-tight text-brand-text">SEOUL GLOW</span>
+</div>
+<!-- Desktop Menu -->
+<div class="hidden md:flex space-x-12 items-center">
+<a class="text-brand-text hover:text-brand-accent transition-colors text-lg italic" href="#">Tienda</a>
+<a class="text-brand-text font-medium border-b border-brand-text transition-colors text-lg" href="#">Nuestra Historia</a>
+<a class="text-brand-text hover:text-brand-accent transition-colors text-lg italic" href="#">Rituales</a>
+<a class="text-brand-text hover:text-brand-accent transition-colors text-lg italic" href="#">Blog</a>
+</div>
+<!-- Icons -->
+<div class="flex items-center space-x-6">
+<button class="text-brand-text hover:text-brand-accent transition-colors">
+<span class="material-icons">search</span>
+</button>
+<button class="text-brand-text hover:text-brand-accent transition-colors relative">
+<span class="material-icons">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-brand-footer text-brand-bg text-xs w-4 h-4 flex items-center justify-center rounded-full">2</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pt-20">
+<!-- Hero Section: Editorial Style -->
+<section class="relative pt-16 pb-24 lg:pt-24 lg:pb-32 overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Text Column -->
+<div class="lg:col-span-5 text-center lg:text-left order-2 lg:order-1">
+<span class="text-brand-accent italic text-xl mb-4 block">Desde Seúl hasta Bogotá</span>
+<h1 class="text-5xl md:text-6xl lg:text-7xl font-light mb-8 leading-[1.1] text-brand-text">
+                            La pureza de un <span class="italic font-medium">ritual milenario</span>.
+                        </h1>
+<p class="text-lg md:text-xl text-brand-text/80 leading-relaxed font-light mb-8 max-w-md mx-auto lg:mx-0">
+                            No vendemos productos, compartimos secretos. Una invitación a transformar tu rutina en un momento sagrado de cuidado personal.
+                        </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+<button class="group relative px-8 py-3 bg-brand-text text-brand-bg rounded-full overflow-hidden transition-all hover:shadow-lg hover:shadow-brand-text/20">
+<span class="relative z-10 font-medium">Descubre la Colección</span>
+</button>
+</div>
+</div>
+<!-- Image Column -->
+<div class="lg:col-span-7 order-1 lg:order-2 relative">
+<div class="relative rounded-t-[10rem] rounded-b-[2rem] overflow-hidden aspect-[4/5] shadow-2xl shadow-brand-text/5 mx-auto max-w-lg lg:max-w-none">
+<img alt="Serene woman with glowing skin holding a flower" class="w-full h-full object-cover transform hover:scale-105 transition-duration-700 transition-transform duration-700" data-alt="Minimalist portrait of serene woman with glowing skin" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9_fjJMWJ6ylhBuTphiS7paVF9oRowmJT8kWcJNAvt0P9DAzG6CCOXQU6fhbrmzLWoccC3DqeuKM-iBmeyz1VFKLEXOoryRirl6qmllCtlLuM4mhj4o6QTmD23l-y0utx3FGf6lYOIJDVLukV7M4HcHj1-eJoOKl_CC1TsSUfkGrrInfbt0lTmymyRK8d4DiQbybis77IoalsLpFGJcaGQwVBMm8WYW3I5BbgKXtIzzA76g24T58MhbRhUNGn65o2uQlzgBjlEKRJW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-text/20 to-transparent mix-blend-multiply"></div>
+</div>
+<!-- Floating decorative element -->
+<div class="absolute -bottom-6 -left-6 md:-left-12 bg-white/40 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/50 hidden md:block">
+<p class="font-display italic text-brand-text text-lg">"La piel es el espejo del alma"</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorative Texture -->
+<div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/20 to-transparent pointer-events-none"></div>
+</section>
+<!-- Narrative Block -->
+<section class="py-20 lg:py-32 relative">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<span class="material-icons text-4xl text-brand-accent mb-6 opacity-60">format_quote</span>
+<h2 class="text-3xl md:text-4xl font-normal text-brand-text mb-12 leading-tight">
+                    Nacimos de una fascinación por la <span class="text-brand-accent italic">perfección</span> y la simplicidad.
+                </h2>
+<div class="space-y-8 text-lg md:text-xl leading-loose text-brand-text/90 font-light text-justify md:text-center">
+<p>
+                        Todo comenzó en un viaje de otoño a la isla de Jeju. Entre campos de té verde y brisas marinas, descubrimos que la belleza en Corea no es vanidad, es respeto. Respeto por el cuerpo, por el tiempo y por la naturaleza.
+                    </p>
+<p>
+                        Al regresar a Colombia, sentimos que faltaba algo: esa conexión profunda entre ingredientes puros y tecnología de vanguardia. Así nació Seoul Glow. Nuestra misión es tender un puente invisible entre la innovación de Gangnam y la calidez de los hogares colombianos.
+                    </p>
+<p>
+                        Creemos que cada gota de esencia cuenta una historia y que cada mascarilla es una pausa necesaria en el caos del día a día. Queremos que te enamores de tu piel, tal como es, y que la cuides con lo mejor que el mundo tiene para ofrecer.
+                    </p>
+</div>
+<div class="mt-16 border-t border-brand-text/10 pt-12">
+<img alt="Minimalist arrangement of skincare bottles on stone" class="w-full h-64 md:h-96 object-cover rounded-xl shadow-sm grayscale hover:grayscale-0 transition-all duration-700" data-alt="Minimalist skincare bottles arranged on natural stone" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwgnS14JBwC8l5NAXqspYdkmiryYS0SO9dKmY51cZa4wdhPqjuWQEfcEjRoEbPyngHqliDdY6EtkdBdXa9a0L2GhaYKqXHlfFejsBIxD7oFAPnrCPf2z7SIreaWuu5pVyR0Yyl9oGhYApGRVgNwNUVfZKFBJLt7TgRKOv8wr13pzzxDbXfrFZHti3cQnub7WksYUDqj5tks9SdgxlxwvpxT1P806koJxjpidir1U8leblcSObABGQqUy86QDHJ24Fox3LzsWk7mJYT"/>
+<p class="mt-4 text-sm text-brand-accent italic">Curaduría exclusiva de marcas premium.</p>
+</div>
+</div>
+</section>
+<!-- Mission Highlight / Values -->
+<section class="py-24 bg-brand-bg relative overflow-hidden">
+<!-- Subtle pattern overlay -->
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#344648 1px, transparent 1px); background-size: 32px 32px;"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+<div class="text-center mb-20">
+<h3 class="text-sm font-bold tracking-widest text-brand-accent uppercase mb-3">Nuestros Pilares</h3>
+<h2 class="text-4xl md:text-5xl text-brand-text font-medium">Belleza Consciente</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+<!-- Value 1 -->
+<div class="group text-center">
+<div class="w-20 h-20 mx-auto bg-brand-text/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-brand-text/10 transition-colors duration-300">
+<span class="material-icons text-brand-text text-4xl font-light">science</span>
+</div>
+<h4 class="text-2xl font-medium text-brand-text mb-4">Innovación &amp; Tradición</h4>
+<p class="text-brand-text/80 leading-relaxed font-light px-4">
+                            Fusionamos la sabiduría ancestral de los ingredientes fermentados con la biotecnología más avanzada de los laboratorios de Seúl.
+                        </p>
+</div>
+<!-- Value 2 -->
+<div class="group text-center">
+<div class="w-20 h-20 mx-auto bg-brand-text/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-brand-text/10 transition-colors duration-300">
+<span class="material-icons text-brand-text text-4xl font-light">volunteer_activism</span>
+</div>
+<h4 class="text-2xl font-medium text-brand-text mb-4">Cruelty Free &amp; Limpio</h4>
+<p class="text-brand-text/80 leading-relaxed font-light px-4">
+                            Seleccionamos rigurosamente productos libres de crueldad animal y formulados sin químicos agresivos. Tu piel merece gentileza.
+                        </p>
+</div>
+<!-- Value 3 -->
+<div class="group text-center">
+<div class="w-20 h-20 mx-auto bg-brand-text/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-brand-text/10 transition-colors duration-300">
+<span class="material-icons text-brand-text text-4xl font-light">local_shipping</span>
+</div>
+<h4 class="text-2xl font-medium text-brand-text mb-4">De Corea a tu Puerta</h4>
+<p class="text-brand-text/80 leading-relaxed font-light px-4">
+                            Eliminamos intermediarios innecesarios para traer la autenticidad coreana directamente a Colombia, garantizando frescura y originalidad.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Break / Call to Action -->
+<section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0">
+<img alt="Soft silk texture representing smooth skin" class="w-full h-full object-cover" data-alt="Abstract soft silk texture background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVFCZNF-O9PUFMdCfuLD05g01o9AxbDnLs8EzYzNeHOdRSg5Y6sP9luwzHbT5F7JQVG4jo69hR4YmdxsGBqJtEe32e-o5KEc7PLmispPfybC7e0QRdBqjga5svOTbSsL5hxyNoV-zV6Q2xmmP9ZNm1Rf4jL2EAO81F-amMqFfsxg0QD40VrEnoCuRpHNexmp-E3jjA3FHqH5qvOE8wKJ6PycCWgiJpxilghSegDaEKCDF6IBk1nJjFWPMatE_Zxe0VLCSj_BPanhWG"/>
+<div class="absolute inset-0 bg-brand-text/30 backdrop-blur-[2px]"></div>
+</div>
+<div class="relative z-10 text-center px-4 max-w-2xl mx-auto">
+<h2 class="text-4xl md:text-5xl lg:text-6xl text-brand-bg font-light mb-8 drop-shadow-lg">
+                    ¿Lista para comenzar tu viaje?
+                </h2>
+<a class="inline-flex items-center justify-center px-8 py-4 bg-brand-bg text-brand-text text-lg rounded-sm hover:bg-white transition-all duration-300 shadow-xl" href="#">
+<span>Explorar Tienda</span>
+<span class="material-icons ml-2 text-sm">arrow_forward</span>
+</a>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-brand-footer text-brand-bg pt-20 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+<!-- Brand Info -->
+<div class="space-y-6">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-icons text-brand-bg text-2xl">spa</span>
+<span class="font-display font-semibold text-xl tracking-tight">SEOUL GLOW</span>
+</div>
+<p class="text-brand-bg/60 text-sm leading-relaxed font-sans">
+                        Traemos los secretos mejor guardados de la belleza coreana para iluminar tu piel y tu espíritu. Autenticidad y pureza en cada envase.
+                    </p>
+<div class="flex space-x-4">
+<a class="text-brand-bg/60 hover:text-white transition-colors" href="#"><span class="sr-only">Instagram</span>IG</a>
+<a class="text-brand-bg/60 hover:text-white transition-colors" href="#"><span class="sr-only">Facebook</span>FB</a>
+<a class="text-brand-bg/60 hover:text-white transition-colors" href="#"><span class="sr-only">TikTok</span>TK</a>
+</div>
+</div>
+<!-- Links 1 -->
+<div>
+<h4 class="font-medium text-lg mb-6 text-white">Descubre</h4>
+<ul class="space-y-4 text-brand-bg/60 text-sm font-sans">
+<li><a class="hover:text-white transition-colors" href="#">Nuestra Historia</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Ingredientes</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Rutina de 10 Pasos</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Blog K-Beauty</a></li>
+</ul>
+</div>
+<!-- Links 2 -->
+<div>
+<h4 class="font-medium text-lg mb-6 text-white">Soporte</h4>
+<ul class="space-y-4 text-brand-bg/60 text-sm font-sans">
+<li><a class="hover:text-white transition-colors" href="#">Envíos y Devoluciones</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Preguntas Frecuentes</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Contacto</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Términos del Servicio</a></li>
+</ul>
+</div>
+<!-- Newsletter -->
+<div>
+<h4 class="font-medium text-lg mb-6 text-white">Únete al Club Glow</h4>
+<p class="text-brand-bg/60 text-sm mb-4 font-sans">Recibe consejos de expertos y ofertas exclusivas.</p>
+<form class="flex flex-col gap-3">
+<input class="bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/50 transition-colors font-sans" placeholder="Tu correo electrónico" type="email"/>
+<button class="bg-brand-bg text-brand-footer px-4 py-2 rounded text-sm font-medium hover:bg-white transition-colors" type="submit">Suscribirse</button>
+</form>
+</div>
+</div>
+<div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-brand-bg/40 text-xs font-sans">
+                    © 2023 Seoul Glow Colombia. Todos los derechos reservados.
+                </p>
+<div class="flex items-center gap-2 text-brand-bg/40 text-xs font-sans">
+<span>Bogotá, Colombia</span>
+<span class="w-1 h-1 rounded-full bg-brand-bg/40"></span>
+<span>Seúl, Corea del Sur</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
