@@ -17,6 +17,21 @@ const menuItems = [
     icon: 'inventory',
   },
   {
+    name: 'Kits',
+    href: '/admin/kits',
+    icon: 'auto_awesome',
+  },
+  {
+    name: 'Blog',
+    href: '/admin/blog',
+    icon: 'article',
+  },
+  {
+    name: 'Banners',
+    href: '/admin/banners',
+    icon: 'campaign',
+  },
+  {
     name: 'Órdenes',
     href: '/admin/ordenes',
     icon: 'shopping_bag',
@@ -47,13 +62,13 @@ export default function AdminSidebar() {
           <div className="relative w-10 h-10">
             <Image
               src="/logo.png"
-              alt="Glow Seoul"
+              alt="K-Beauty Colombia"
               fill
               className="object-contain"
             />
           </div>
           <div>
-            <h1 className="text-xl font-bold">Glow Seoul</h1>
+            <h1 className="text-xl font-bold">K-Beauty Colombia</h1>
             <p className="text-xs text-white/70">Panel Admin</p>
           </div>
         </Link>

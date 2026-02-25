@@ -11,6 +11,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const cartCount = useCartStore((state) => state.getItemCount());
+  const openCart = useCartStore((state) => state.openCart);
 
   // Evitar error de hidratación - solo mostrar carrito después de montar
   useEffect(() => {
@@ -69,6 +70,12 @@ export default function Navbar() {
           <UserNav />
           <Link
             href="/carrito"
+            onClick={(e) => {
+              if (window.innerWidth >= 768) {
+                e.preventDefault();
+                openCart();
+              }
+            }}
             className="relative text-primary hover:text-secondary focus:outline-none transition-colors"
           >
             <span className="material-icons">shopping_bag</span>
@@ -138,11 +145,20 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                href="/marcas"
+                href="/kits"
                 className="block py-2 px-3 text-primary rounded hover:bg-white/40 md:hover:bg-transparent md:hover:text-secondary md:p-0 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Marcas
+                Kits
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/blog"
+                className="block py-2 px-3 text-primary rounded hover:bg-white/40 md:hover:bg-transparent md:hover:text-secondary md:p-0 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
               </Link>
             </li>
           </ul>

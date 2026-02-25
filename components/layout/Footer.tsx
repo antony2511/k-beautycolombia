@@ -64,12 +64,12 @@ export default function Footer() {
             <h4 className="font-bold text-primary mb-4">Comprar</h4>
             <ul className="space-y-2 text-sm text-accent">
               <li>
-                <Link href="/novedades" className="hover:text-primary transition-colors">
+                <Link href="/tienda?sortBy=newest" className="hover:text-primary transition-colors">
                   Novedades
                 </Link>
               </li>
               <li>
-                <Link href="/best-sellers" className="hover:text-primary transition-colors">
+                <Link href="/tienda?sortBy=bestseller" className="hover:text-primary transition-colors">
                   Best Sellers
                 </Link>
               </li>
@@ -79,7 +79,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/ofertas" className="hover:text-primary transition-colors">
+                <Link href="/tienda?sortBy=price_asc" className="hover:text-primary transition-colors">
                   Ofertas
                 </Link>
               </li>
@@ -91,22 +91,22 @@ export default function Footer() {
             <h4 className="font-bold text-primary mb-4">Ayuda</h4>
             <ul className="space-y-2 text-sm text-accent">
               <li>
-                <Link href="/envios" className="hover:text-primary transition-colors">
+                <Link href="/tienda" className="hover:text-primary transition-colors">
                   Envíos y Devoluciones
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="hover:text-primary transition-colors">
+                <Link href="/tienda" className="hover:text-primary transition-colors">
                   Preguntas Frecuentes
                 </Link>
               </li>
               <li>
-                <Link href="/rastreo" className="hover:text-primary transition-colors">
+                <Link href="/perfil/ordenes" className="hover:text-primary transition-colors">
                   Rastrea tu pedido
                 </Link>
               </li>
               <li>
-                <Link href="/contacto" className="hover:text-primary transition-colors">
+                <Link href="/tienda" className="hover:text-primary transition-colors">
                   Contacto
                 </Link>
               </li>
@@ -129,7 +129,7 @@ export default function Footer() {
 
         <div className="border-t border-primary/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-accent">
           <p>
-            © {new Date().getFullYear()} GlowSeoul Colombia. Todos los derechos
+            © {new Date().getFullYear()} K-Beauty Colombia. Todos los derechos
             reservados.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">

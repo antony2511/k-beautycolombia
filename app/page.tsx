@@ -4,8 +4,28 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ProductSlider from '@/components/productos/ProductSlider';
 import BenefitsSlider from '@/components/home/BenefitsSlider';
-import BrandsSlider from '@/components/home/BrandsSlider';
 import { prisma } from '@/lib/prisma';
+
+async function getLatestBlogPosts() {
+  try {
+    return await prisma.blogPost.findMany({
+      where: { isPublished: true },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        coverImage: true,
+        category: true,
+        createdAt: true,
+      },
+    });
+  } catch {
+    return [];
+  }
+}
 
 async function getBestSellers() {
   const products = await prisma.product.findMany({
@@ -58,20 +78,64 @@ const routineSteps = [
   },
 ];
 
-const brands = [
-  'COSRX',
-  'BEAUTY OF JOSEON',
-  'SOME BY MI',
-  'LANEIGE',
-  'INNISFREE',
-  'ETUDE',
-];
+const categoryLabels: Record<string, string> = {
+  rutina_dia: 'Rutina de Día',
+  rutina_noche: 'Rutina de Noche',
+  ingredientes: 'Ingredientes',
+  casos_exito: 'Casos de Éxito',
+  consejos: 'Consejos',
+};
+
+const categoryColors: Record<string, string> = {
+  rutina_dia: 'bg-yellow-100 text-yellow-800',
+  rutina_noche: 'bg-indigo-100 text-indigo-800',
+  ingredientes: 'bg-green-100 text-green-800',
+  casos_exito: 'bg-pink-100 text-pink-800',
+  consejos: 'bg-purple-100 text-purple-800',
+};
 
 export default async function HomePage() {
-  const bestSellers = await getBestSellers();
+  const [bestSellers, latestPosts] = await Promise.all([
+    getBestSellers(),
+    getLatestBlogPosts(),
+  ]);
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'K-Beauty Colombia',
+    url: 'https://korea.uclipcolombia.com',
+    logo: 'https://korea.uclipcolombia.com/logo.png',
+    description: 'Tienda online de productos de belleza coreana auténticos en Colombia.',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'CO',
+    },
+    sameAs: [],
+  };
+
+  const webSiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'K-Beauty Colombia',
+    url: 'https://korea.uclipcolombia.com',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://korea.uclipcolombia.com/buscar?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+      />
       <Navbar />
 
       <main>
@@ -144,7 +208,7 @@ export default async function HomePage() {
               </Link>
 
               <Link
-                href="/rutina"
+                href="/kits"
                 className="group px-10 py-5 bg-white/95 backdrop-blur-md text-primary border-2 border-primary rounded-full font-bold text-lg hover:bg-primary hover:text-white transition-all duration-300 inline-flex items-center justify-center hover:scale-110 shadow-xl"
               >
                 Ver Rutina
@@ -263,9 +327,9 @@ export default async function HomePage() {
         {/* Medical Curation Section */}
         <section className="py-24 bg-gradient-to-br from-background-gray via-background-white to-background-gray">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white rounded-3xl shadow-2xl overflow-hidden border border-accent-light/30">
+            <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch bg-white rounded-3xl shadow-2xl overflow-hidden border border-accent-light/30">
               {/* Imagen - Lado Izquierdo */}
-              <div className="relative h-full min-h-[600px] lg:min-h-[700px] order-2 lg:order-1">
+              <div className="relative w-full min-h-[320px] sm:min-h-[420px] lg:min-h-[700px]">
                 <Image
                   src="/dra-berenice.png"
                   alt="Dra. Berenice Rodríguez - Médica Estética"
@@ -283,7 +347,7 @@ export default async function HomePage() {
               </div>
 
               {/* Contenido - Lado Derecho */}
-              <div className="p-8 lg:p-16 order-1 lg:order-2">
+              <div className="p-8 lg:p-16">
                 {/* Subtítulo */}
                 <span className="inline-block text-secondary font-bold uppercase tracking-widest text-sm mb-4 bg-secondary/10 px-4 py-2 rounded-full">
                   Criterio Profesional
@@ -316,10 +380,10 @@ export default async function HomePage() {
 
                 {/* CTA Button */}
                 <Link
-                  href="/sobre-nosotros"
+                  href="#"
                   className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-secondary to-secondary-light text-white rounded-full font-bold text-lg shadow-xl shadow-secondary/30 hover:shadow-2xl hover:shadow-secondary/50 transition-all duration-300 hover:scale-105"
                 >
-                  <span>Conoce mi trayectoria</span>
+                  <span>Descubre mis recomendaciones</span>
                   <span className="material-icons text-xl group-hover:translate-x-1 transition-transform">
                     arrow_forward
                   </span>
@@ -341,29 +405,91 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Brands Section */}
-        <section className="py-12 bg-gradient-to-r from-background-cream/30 via-secondary/5 to-background-cream/30 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 text-center mb-8">
-            <h3 className="text-lg font-medium text-accent uppercase tracking-widest">
-              Nuestras Marcas Oficiales
-            </h3>
-          </div>
-
-          {/* Slider para móvil */}
-          <div className="lg:hidden">
-            <BrandsSlider brands={brands} />
-          </div>
-
-          {/* Diseño estático para desktop */}
-          <div className="hidden lg:flex justify-between items-center max-w-7xl mx-auto px-6 opacity-60 hover:opacity-100 transition-all duration-500 gap-8">
-            {brands.map((brand) => (
-              <span
-                key={brand}
-                className="text-2xl font-bold text-primary/70 hover:text-primary cursor-pointer transition-colors"
+        {/* Blog Preview Section */}
+        <section className="py-16 bg-gradient-to-r from-background-cream/30 via-secondary/5 to-background-cream/30">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex justify-between items-end mb-10">
+              <div>
+                <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-2 block">
+                  Blog & Rutinas
+                </span>
+                <h2 className="text-3xl md:text-4xl font-bold text-primary">
+                  Últimas Rutinas
+                </h2>
+                <p className="text-accent mt-2">
+                  Consejos y rutinas de la Dra. Berenice Rodríguez
+                </p>
+              </div>
+              <Link
+                href="/blog"
+                className="hidden md:flex items-center text-primary font-medium hover:text-secondary transition-colors"
               >
-                {brand}
-              </span>
-            ))}
+                Ver todas las rutinas
+                <span className="material-icons ml-1 text-sm">arrow_forward</span>
+              </Link>
+            </div>
+
+            {latestPosts.length === 0 ? (
+              <div className="text-center py-16 bg-white/60 backdrop-blur-sm rounded-2xl border border-accent-light/30">
+                <span className="material-icons text-5xl text-secondary/40 mb-3 block">article</span>
+                <h3 className="text-xl font-bold text-primary mb-2">Próximamente</h3>
+                <p className="text-accent mb-6 max-w-md mx-auto">
+                  La Dra. Berenice está preparando rutinas y artículos de skincare exclusivos para ti.
+                </p>
+                <Link
+                  href="/blog"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-white rounded-full font-medium hover:bg-secondary-dark transition-colors"
+                >
+                  Ir al Blog
+                  <span className="material-icons text-sm">arrow_forward</span>
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {latestPosts.map((post) => (
+                  <Link
+                    key={post.id}
+                    href={`/blog/${post.slug}`}
+                    className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-accent-light/20"
+                  >
+                    <div className="relative h-44 overflow-hidden">
+                      <img
+                        src={post.coverImage}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span
+                          className={`text-xs font-bold px-3 py-1 rounded-full ${
+                            categoryColors[post.category] || 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
+                          {categoryLabels[post.category] || post.category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-bold text-primary mb-2 line-clamp-2 group-hover:text-secondary transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-sm text-accent line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-8 md:hidden text-center">
+              <Link
+                href="/blog"
+                className="inline-flex items-center text-primary font-medium hover:text-secondary transition-colors"
+              >
+                Ver todas las rutinas
+                <span className="material-icons ml-1 text-sm">arrow_forward</span>
+              </Link>
+            </div>
           </div>
         </section>
 

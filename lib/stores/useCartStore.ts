@@ -5,10 +5,15 @@ import type { CartItem } from '@/types';
 
 interface CartStore {
   items: CartItem[];
+  isOpen: boolean;
+  lastAddedProductId: string | null;
   addItem: (product: Product, quantity: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  openCart: () => void;
+  closeCart: () => void;
+  clearLastAdded: () => void;
   getItemCount: () => number;
   getSubtotal: () => number;
   getTotal: () => number;
@@ -18,6 +23,12 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      isOpen: false,
+      lastAddedProductId: null,
+
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
+      clearLastAdded: () => set({ lastAddedProductId: null }),
 
       addItem: (product, quantity) => {
         const items = get().items;
@@ -31,6 +42,7 @@ export const useCartStore = create<CartStore>()(
                 ? { ...item, quantity: item.quantity + quantity }
                 : item
             ),
+            lastAddedProductId: product.id,
           });
         } else {
           // Si es nuevo, agregarlo al carrito
@@ -43,6 +55,7 @@ export const useCartStore = create<CartStore>()(
                 quantity,
               },
             ],
+            lastAddedProductId: product.id,
           });
         }
       },
@@ -89,7 +102,8 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'kbeauty-cart', // nombre de la key en localStorage
+      name: 'kbeauty-cart',
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

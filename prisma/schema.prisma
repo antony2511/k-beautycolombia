@@ -30,10 +30,38 @@ model Product {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   orderItems    OrderItem[]
+  kitItems      KitItem[]
 
   @@index([category])
   @@index([brand])
   @@index([isActive])
+}
+
+model Kit {
+  id          String    @id @default(cuid())
+  name        String
+  tagline     String
+  description String?   @db.Text
+  image       String    @db.Text
+  discount    Int?
+  isActive    Boolean   @default(true)
+  items       KitItem[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+}
+
+model KitItem {
+  id        String  @id @default(cuid())
+  kitId     String
+  kit       Kit     @relation(fields: [kitId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  position  Int     @default(0)
+
+  @@index([kitId])
+  @@index([productId])
 }
 
 model Order {
@@ -100,4 +128,44 @@ model OrderItem {
 
   @@index([orderId])
   @@index([productId])
+}
+
+model Banner {
+  id          String    @id @default(cuid())
+  message     String
+  subMessage  String?
+  type        String    @default("top_bar")  // top_bar | modal
+  variant     String    @default("promo")    // promo | info | sale | warning
+  image       String?   @db.Text
+  link        String?
+  linkText    String?
+  isActive    Boolean   @default(true)
+  dismissible Boolean   @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+}
+
+model BlogPost {
+  id                String   @id @default(cuid())
+  title             String
+  slug              String   @unique
+  excerpt           String   @db.Text
+  content           String   @db.LongText
+  coverImage        String   @db.Text
+  category          String   // rutina_dia | rutina_noche | ingredientes | casos_exito | consejos
+  skinType          Json?    // String[]
+  brands            Json?    // String[]
+  relatedProductIds Json?    // String[]
+  isPublished       Boolean  @default(false)
+  author            String   @default("Dra. Berenice Rodríguez")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([category])
+  @@index([slug])
 }
