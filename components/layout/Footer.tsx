@@ -113,17 +113,24 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Envíos */}
+          {/* Envíos y contacto */}
           <div>
             <h4 className="font-bold text-primary mb-4">Envíos</h4>
             <p className="text-sm text-accent mb-4">
               Envíos a todo Colombia. Gratis por compras superiores a $150.000
               COP.
             </p>
-            <div className="flex items-center gap-2 text-primary/60">
+            <div className="flex items-center gap-2 text-primary/60 mb-3">
               <span className="material-icons text-lg">local_shipping</span>
               <span className="text-sm">Bogotá, Medellín, Cali...</span>
             </div>
+            <a
+              href="mailto:Info@kbeautycolombia.com"
+              className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-primary transition-colors"
+            >
+              <span className="material-icons text-base">mail_outline</span>
+              Info@kbeautycolombia.com
+            </a>
           </div>
         </div>
 

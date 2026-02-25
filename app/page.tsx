@@ -223,6 +223,54 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Trust Bar — Importación · Envío · Certificación */}
+        <section className="border-y border-accent-light/40 bg-white/80 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-6 py-5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-accent-light/40">
+
+              {/* Autenticidad desde el origen */}
+              <div className="flex items-start gap-4 py-4 sm:py-0 sm:px-8 first:sm:pl-0">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <span className="material-icons text-secondary text-xl">verified</span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-primary">Autenticidad desde el Origen</p>
+                  <p className="text-xs text-gray-500 leading-snug mt-0.5">
+                    Seleccionamos lo mejor de Corea del Sur y lo traemos bajo los más estrictos estándares de calidad.
+                  </p>
+                </div>
+              </div>
+
+              {/* Logística inteligente */}
+              <div className="flex items-start gap-4 py-4 sm:py-0 sm:px-8">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <span className="material-icons text-secondary text-xl">local_shipping</span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-primary">Logística Inteligente</p>
+                  <p className="text-xs text-gray-500 leading-snug mt-0.5">
+                    Despachamos tu pedido directamente desde nuestro centro de distribución en España, garantizando una entrega más rápida y segura.
+                  </p>
+                </div>
+              </div>
+
+              {/* Sello de calidad EU */}
+              <div className="flex items-start gap-4 py-4 sm:py-0 sm:px-8 last:sm:pr-0">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <span className="material-icons text-secondary text-xl">workspace_premium</span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-primary">Sello de Calidad EU</p>
+                  <p className="text-xs text-gray-500 leading-snug mt-0.5">
+                    Todos nuestros productos cuentan con la Certificación Cosmética Europea, cumpliendo la normativa de seguridad más exigente del mundo.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
         {/* Los Más Vendidos Section */}
         <section className="py-20 bg-gradient-to-b from-background-white to-background-gray">
           <div className="max-w-7xl mx-auto px-6">
