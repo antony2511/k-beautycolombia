@@ -30,6 +30,12 @@ export default function RegisterPage() {
 
     try {
       await registerWithEmail(data.email, data.password, data.name, data.phone)
+      // Enviar email de bienvenida (fire-and-forget)
+      fetch('/api/auth/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.email, name: data.name }),
+      }).catch(() => {});
       setSuccess(true)
     } catch (error: any) {
       setError(error.message || 'Error al registrarse')
@@ -56,7 +62,7 @@ export default function RegisterPage() {
     return (
       <>
         <Navbar />
-        <main className="flex-grow max-w-md mx-auto px-6 py-12 w-full min-h-screen flex items-center">
+        <main className="flex-grow max-w-md mx-auto px-6 pb-12 pt-24 w-full min-h-screen flex items-center">
           <div className="w-full text-center">
             <div className="mb-6">
               <span className="material-icons text-6xl text-secondary">check_circle</span>
@@ -84,7 +90,7 @@ export default function RegisterPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-md mx-auto px-6 py-12 w-full min-h-screen flex items-center">
+      <main className="flex-grow max-w-md mx-auto px-6 pb-12 pt-24 w-full min-h-screen flex items-center">
         <div className="w-full">
           {/* Header */}
           <div className="text-center mb-8">

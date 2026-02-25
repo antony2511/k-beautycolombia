@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { generateOrderNumber } from '@/lib/utils/order-number';
 import { checkoutSchema } from '@/lib/validations/checkout';
 import type { CartItem } from '@/types';
+import { sendOrderConfirmation } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,6 +110,24 @@ export async function POST(request: NextRequest) {
         orderNumber: order.orderNumber,
       });
 
+      // Enviar email de confirmación
+      sendOrderConfirmation({
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        items: order.items.map((i) => ({
+          name: i.name,
+          brand: i.brand,
+          quantity: i.quantity,
+          price: i.price,
+          image: i.image ?? undefined,
+        })),
+        subtotal,
+        shipping,
+        total,
+        shippingAddress: order.shippingAddress as any,
+      });
+
       // Redirigir directamente a confirmación (modo desarrollo)
       return NextResponse.json({
         success: true,
@@ -179,6 +198,24 @@ export async function POST(request: NextRequest) {
     });
 
     console.log('✅ Stripe session created:', session.id);
+
+    // Enviar email de confirmación (Stripe — el pago se confirma vía webhook)
+    sendOrderConfirmation({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      items: order.items.map((i) => ({
+        name: i.name,
+        brand: i.brand,
+        quantity: i.quantity,
+        price: i.price,
+        image: i.image ?? undefined,
+      })),
+      subtotal,
+      shipping,
+      total,
+      shippingAddress: order.shippingAddress as any,
+    });
 
     // Retornar URL de checkout de Stripe
     return NextResponse.json({

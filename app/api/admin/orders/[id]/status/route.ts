@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyAdminToken } from '@/lib/admin/auth';
 import { z } from 'zod';
+import { sendStatusUpdate } from '@/lib/email';
 
 // Importar Firebase Admin
 let db: any = null;
@@ -113,10 +114,16 @@ export async function PATCH(
     // Actualizar orden
     await orderRef.update(updateData);
 
-    // TODO: Si notifyCustomer es true, enviar email al cliente
-    if (notifyCustomer) {
-      console.log(`📧 TODO: Enviar email de notificación de cambio de estado a ${currentData.customerEmail}`);
-      // Implementar envío de email aquí (con Resend, SendGrid, etc.)
+    // Enviar email de notificación al cliente
+    if (notifyCustomer && currentData.customerEmail) {
+      sendStatusUpdate({
+        orderNumber: currentData.orderNumber ?? id,
+        customerName: currentData.customerName ?? 'Cliente',
+        customerEmail: currentData.customerEmail,
+        status: newStatus,
+        trackingNumber: trackingNumber ?? currentData.trackingNumber ?? null,
+        notes: notes ?? null,
+      });
     }
 
     // Obtener orden actualizada
