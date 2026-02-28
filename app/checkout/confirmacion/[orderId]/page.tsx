@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -15,7 +15,7 @@ interface PaymentResult {
   message: string;
 }
 
-export default function ConfirmacionPage() {
+function ConfirmacionContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -95,7 +95,7 @@ export default function ConfirmacionPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-4xl mx-auto px-6 py-12 w-full min-h-screen">
+      <main className="flex-grow max-w-4xl mx-auto px-6 pb-12 pt-24 w-full min-h-screen">
         {isLoading ? (
           // Loading State
           <div className="text-center py-24">
@@ -137,7 +137,7 @@ export default function ConfirmacionPage() {
           </div>
         ) : result?.paymentStatus === 'approved' ? (
           // Success State
-          <div className="text-center py-12">
+          <div className="text-center pb-12 pt-24">
             <div className="mb-8">
               <span className="material-icons text-8xl text-green-500 animate-bounce">
                 check_circle
@@ -199,7 +199,7 @@ export default function ConfirmacionPage() {
           </div>
         ) : result?.paymentStatus === 'declined' ? (
           // Declined State
-          <div className="text-center py-12">
+          <div className="text-center pb-12 pt-24">
             <div className="mb-8">
               <span className="material-icons text-8xl text-red-400">cancel</span>
             </div>
@@ -259,7 +259,7 @@ export default function ConfirmacionPage() {
           </div>
         ) : (
           // Pending or Other State
-          <div className="text-center py-12">
+          <div className="text-center pb-12 pt-24">
             <div className="mb-8">
               <span className="material-icons text-8xl text-yellow-500">pending</span>
             </div>
@@ -288,5 +288,15 @@ export default function ConfirmacionPage() {
 
       <Footer />
     </>
+  );
+}
+
+export default function ConfirmacionPage() {
+  return (
+    <Suspense fallback={
+      <><Navbar /><div className="flex justify-center items-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div></>
+    }>
+      <ConfirmacionContent />
+    </Suspense>
   );
 }

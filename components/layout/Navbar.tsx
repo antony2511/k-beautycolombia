@@ -35,13 +35,6 @@ export default function Navbar() {
     prefetchFilters();
   };
 
-  const handleHoverCategoria = (categoria: string) => {
-    const params = new URLSearchParams();
-    params.set('category', categoria);
-    params.set('sortBy', 'newest');
-    prefetchProducts(params);
-  };
-
   return (
     <nav className="fixed w-full z-50 top-0 start-0 border-b border-accent-light/30 bg-surface-white/95 backdrop-blur-md shadow-sm">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between px-6 py-4">
@@ -111,36 +104,6 @@ export default function Navbar() {
                 onMouseEnter={handleHoverTienda}
               >
                 Tienda
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/categoria/limpieza"
-                className="block py-2 px-3 text-primary rounded hover:bg-white/40 md:hover:bg-transparent md:hover:text-secondary md:p-0 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-                onMouseEnter={() => handleHoverCategoria('limpieza')}
-              >
-                Limpieza
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/categoria/hidratacion"
-                className="block py-2 px-3 text-primary rounded hover:bg-white/40 md:hover:bg-transparent md:hover:text-secondary md:p-0 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-                onMouseEnter={() => handleHoverCategoria('hidratacion')}
-              >
-                Hidratación
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/categoria/tratamiento"
-                className="block py-2 px-3 text-primary rounded hover:bg-white/40 md:hover:bg-transparent md:hover:text-secondary md:p-0 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-                onMouseEnter={() => handleHoverCategoria('tratamiento')}
-              >
-                Tratamiento
               </Link>
             </li>
             <li>

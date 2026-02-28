@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { useCartStore } from '@/lib/stores/useCartStore';
 
 interface ProductCardProps {
@@ -25,6 +26,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -71,17 +73,13 @@ export default function ProductCard({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            // Crear objeto de producto mínimo para el carrito
-            const product = {
-              id,
-              name,
-              brand,
-              price,
-              image,
-              badge,
-              badgeType,
-            };
+            const product = { id, name, brand, price, image, badge, badgeType };
             addItem(product as any, 1);
+            if (window.innerWidth < 768) {
+              toast.success('¡Añadido al carrito!', { description: name });
+            } else {
+              openCart();
+            }
           }}
           className="absolute bottom-4 right-4 bg-gradient-to-r from-secondary to-secondary-dark text-white p-3 rounded-full shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-110 z-20"
           aria-label="Agregar al carrito"

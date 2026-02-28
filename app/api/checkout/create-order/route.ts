@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { prisma } from '@/lib/prisma';
 import { generateOrderNumber, generateReferenceCode } from '@/lib/utils/order-number';
 import { checkoutSchema } from '@/lib/validations/checkout';
 import type { CartItem } from '@/types';
@@ -34,58 +34,44 @@ export async function POST(request: NextRequest) {
       postalCode: validatedCustomer.postalCode || '',
     };
 
-    // Preparar items para la base de datos
-    const dbItems = cartItems.map((item: CartItem) => ({
-      productId: item.productId,
-      productName: item.product.name,
-      productBrand: item.product.brand,
-      productImage: item.product.image,
-      quantity: item.quantity,
-      price: item.product.price,
-      subtotal: item.product.price * item.quantity,
-    }));
-
-    // Crear cliente de Supabase
-    const supabase = createServerSupabaseClient();
-
-    // Insertar orden en la base de datos
-    const { data: order, error } = await supabase
-      .from('orders')
-      .insert({
-        order_number: orderNumber,
-        customer_name: validatedCustomer.fullName,
-        customer_email: validatedCustomer.email,
-        customer_phone: validatedCustomer.phone,
-        customer_document_type: validatedCustomer.documentType,
-        customer_document_number: validatedCustomer.documentNumber,
-        items: dbItems,
-        shipping_address: shippingAddress,
-        delivery_instructions: validatedCustomer.deliveryInstructions || null,
+    // Crear orden con items en Prisma
+    const order = await prisma.order.create({
+      data: {
+        orderNumber,
+        customerEmail: validatedCustomer.email,
+        customerName: validatedCustomer.fullName,
+        customerPhone: validatedCustomer.phone,
+        customerDocument: {
+          type: validatedCustomer.documentType,
+          number: validatedCustomer.documentNumber,
+        },
+        shippingAddress,
         subtotal,
         discount: 0,
         shipping,
         total,
         status: 'pending',
-        payment_status: 'pending',
-        wompi_reference: referenceCode,
-      })
-      .select()
-      .single();
+        paymentStatus: 'pending',
+        paymentId: referenceCode,
+        items: {
+          create: cartItems.map((item: CartItem) => ({
+            productId: item.productId,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+            subtotal: item.product.price * item.quantity,
+            image: (item.product.images as string[])?.[0] || '',
+            brand: (item.product as unknown as { brand?: string }).brand || '',
+          })),
+        },
+      },
+    });
 
-    if (error) {
-      console.error('Error al crear orden en Supabase:', error);
-      return NextResponse.json(
-        { error: 'Error al crear la orden' },
-        { status: 500 }
-      );
-    }
-
-    // Retornar datos para Wompi
     return NextResponse.json({
       success: true,
       orderId: order.id,
-      orderNumber: order.order_number,
-      referenceCode: referenceCode,
+      orderNumber: order.orderNumber,
+      referenceCode,
       totalAmount: total,
       customerEmail: validatedCustomer.email,
       customerName: validatedCustomer.fullName,

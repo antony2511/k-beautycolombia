@@ -171,7 +171,7 @@ export default function MisDireccionesPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12">
+        <div className="flex justify-center pb-12 pt-24">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-secondary border-t-transparent"></div>
         </div>
       ) : addresses.length === 0 ? (

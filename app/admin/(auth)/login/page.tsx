@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
           <div className="relative w-32 h-32">
             <Image
               src="/logo.png"
-              alt="Glow Seoul Logo"
+              alt="K-Beauty Colombia Logo"
               fill
               className="object-contain"
               priority
@@ -106,7 +106,7 @@ export default function AdminLoginPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full pl-12 pr-4 py-3 border-2 border-accent-light rounded-lg focus:border-secondary focus:outline-none transition-colors"
-                placeholder="admin@glowseoul.co"
+                placeholder="admin@kbeauty.com"
                 required
                 autoComplete="email"
               />
@@ -181,7 +181,7 @@ export default function AdminLoginPage() {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-accent-light/30 text-center">
           <p className="text-sm text-accent">
-            Glow Seoul - Panel Administrativo
+            K-Beauty Colombia - Panel Administrativo
           </p>
         </div>
       </div>

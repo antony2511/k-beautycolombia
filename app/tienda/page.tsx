@@ -5,13 +5,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
+import KitCard from '@/components/kits/KitCard';
 import { useCartStore } from '@/lib/stores/useCartStore';
 import type { Product } from '@/lib/data/products';
+import type { KitWithItems } from '@/lib/types/kits';
 
 // Lazy load Footer (no es crítico para el primer render)
 const Footer = dynamic(() => import('@/components/layout/Footer'), {
   loading: () => <div className="h-96" />,
 });
+
 
 interface Filters {
   categories: string[];
@@ -24,6 +27,7 @@ export default function TiendaPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [kits, setKits] = useState<KitWithItems[]>([]);
   const [availableFilters, setAvailableFilters] = useState<Filters>({
     categories: [],
     brands: [],
@@ -41,7 +45,16 @@ export default function TiendaPage() {
 
   const addItem = useCartStore((state) => state.addItem);
 
-  // Cargar filtros disponibles al montar
+  // Leer skinType desde la URL al montar (viene del quiz)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const skinTypeParam = params.get('skinType');
+    if (skinTypeParam) {
+      setSelectedSkinTypes([skinTypeParam]);
+    }
+  }, []);
+
+  // Cargar filtros y kits al montar
   useEffect(() => {
     async function fetchFilters() {
       try {
@@ -54,7 +67,21 @@ export default function TiendaPage() {
         console.error('Error fetching filters:', error);
       }
     }
+
+    async function fetchKits() {
+      try {
+        const response = await fetch('/api/kits');
+        if (response.ok) {
+          const data = await response.json();
+          setKits(data);
+        }
+      } catch (error) {
+        console.error('Error fetching kits:', error);
+      }
+    }
+
     fetchFilters();
+    fetchKits();
   }, []);
 
   // Cargar productos cuando cambien los filtros
@@ -126,7 +153,7 @@ export default function TiendaPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-12 w-full">
+      <main className="flex-grow max-w-7xl mx-auto px-6 pb-12 pt-24 w-full">
         {/* Header */}
         <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
@@ -155,6 +182,27 @@ export default function TiendaPage() {
             </select>
           </div>
         </header>
+
+        {/* Kits Section */}
+        {kits.length > 0 && (
+          <section className="mb-10 bg-gradient-to-r from-secondary/10 to-accent-light/20 rounded-2xl p-6 border border-secondary/20">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <span className="material-icons text-secondary align-middle mr-2">auto_awesome</span>
+                <span className="text-xl font-bold text-primary">Kits y Rutinas Completas</span>
+                <p className="text-sm text-accent mt-0.5">Rutinas curadas con descuento especial</p>
+              </div>
+              <Link href="/kits" className="text-sm font-semibold text-secondary hover:underline">
+                Ver todos →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {kits.slice(0, 3).map((kit) => (
+                <KitCard key={kit.id} kit={kit} />
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar - Filtros Desktop */}
@@ -319,7 +367,7 @@ export default function TiendaPage() {
                   >
                     {/* Image */}
                     <Link href={`/producto/${product.id}`}>
-                      <div className="relative overflow-hidden rounded-lg aspect-[4/5] mb-4 bg-white/40 cursor-pointer">
+                      <div className="relative overflow-hidden rounded-lg aspect-square mb-4 bg-white/40 cursor-pointer">
                         <Image
                           src={product.image}
                           alt={product.name}
@@ -404,6 +452,7 @@ export default function TiendaPage() {
       </main>
 
       <Footer />
+
     </>
   );
 }

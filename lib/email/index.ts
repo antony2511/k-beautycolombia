@@ -1,10 +1,14 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-// Lazy init — evita error en build si RESEND_API_KEY no está configurada
-function getResend() {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) throw new Error('RESEND_API_KEY no configurada');
-  return new Resend(key);
+// Lazy init — crea el transporter solo cuando se va a enviar
+function getTransporter() {
+  const user = process.env.GMAIL_USER;
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  if (!user || !pass) throw new Error('GMAIL_USER o GMAIL_APP_PASSWORD no configurados');
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+  });
 }
 
 const FROM = process.env.EMAIL_FROM ?? 'K-Beauty Colombia <Info@kbeautycolombia.com>';
@@ -283,7 +287,7 @@ function welcomeHtml(name: string): string {
 
 export async function sendOrderConfirmation(data: OrderEmailData) {
   try {
-    await getResend().emails.send({
+    await getTransporter().sendMail({
       from: FROM,
       to: data.customerEmail,
       subject: `Pedido confirmado #${data.orderNumber} — K-Beauty Colombia`,
@@ -297,7 +301,7 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
 export async function sendStatusUpdate(data: StatusEmailData) {
   try {
     const label = statusLabel[data.status] ?? data.status;
-    await getResend().emails.send({
+    await getTransporter().sendMail({
       from: FROM,
       to: data.customerEmail,
       subject: `Tu pedido #${data.orderNumber} está: ${label} — K-Beauty Colombia`,
@@ -310,7 +314,7 @@ export async function sendStatusUpdate(data: StatusEmailData) {
 
 export async function sendWelcome(email: string, name: string) {
   try {
-    await getResend().emails.send({
+    await getTransporter().sendMail({
       from: FROM,
       to: email,
       subject: '¡Bienvenida a K-Beauty Colombia! ✨',

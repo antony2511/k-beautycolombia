@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
       <>
         <Navbar />
 
-        <main className="flex-grow max-w-md mx-auto px-6 py-12 w-full min-h-screen flex items-center">
+        <main className="flex-grow max-w-md mx-auto px-6 pb-12 pt-24 w-full min-h-screen flex items-center">
           <div className="w-full text-center">
             <div className="mb-6">
               <span className="material-icons text-6xl text-secondary">mark_email_read</span>
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-md mx-auto px-6 py-12 w-full min-h-screen flex items-center">
+      <main className="flex-grow max-w-md mx-auto px-6 pb-12 pt-24 w-full min-h-screen flex items-center">
         <div className="w-full">
           {/* Header */}
           <div className="text-center mb-8">

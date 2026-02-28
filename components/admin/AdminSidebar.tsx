@@ -41,6 +41,16 @@ const menuItems = [
     href: '/admin/usuarios',
     icon: 'people',
   },
+  {
+    name: 'Suscriptores',
+    href: '/admin/suscriptores',
+    icon: 'mark_email_read',
+  },
+  {
+    name: 'Configuración',
+    href: '/admin/configuracion',
+    icon: 'settings',
+  },
 ];
 
 export default function AdminSidebar() {

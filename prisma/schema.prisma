@@ -149,6 +149,32 @@ model Banner {
   @@index([isActive])
 }
 
+model Subscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  source      String   @default("newsletter") // newsletter | quiz | checkout
+  couponSent  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([email])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model EmailSettings {
+  id          String   @id @default(cuid())
+  smtpHost    String
+  smtpPort    Int      @default(587)
+  smtpUser    String
+  smtpPass    String   @db.Text
+  smtpFrom    String
+  smtpFromName String  @default("K-Beauty Colombia")
+  isActive    Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
+
 model BlogPost {
   id                String   @id @default(cuid())
   title             String

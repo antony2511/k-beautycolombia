@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ProductSlider from '@/components/productos/ProductSlider';
 import BenefitsSlider from '@/components/home/BenefitsSlider';
+import NewsletterForm from '@/components/home/NewsletterForm';
 import { prisma } from '@/lib/prisma';
 
 async function getLatestBlogPosts() {
@@ -28,27 +29,27 @@ async function getLatestBlogPosts() {
 }
 
 async function getBestSellers() {
-  const products = await prisma.product.findMany({
-    where: {
-      isActive: true,
-      badgeType: 'bestseller',
-    },
-    take: 4,
-    orderBy: {
-      createdAt: 'desc',
-    },
+  const bestsellers = await prisma.product.findMany({
+    where: { isActive: true, badgeType: 'bestseller' },
+    take: 6,
+    orderBy: { createdAt: 'desc' },
   });
 
-  // If no bestsellers, get first 4 products
-  if (products.length === 0) {
-    return await prisma.product.findMany({
-      where: { isActive: true },
-      take: 4,
-      orderBy: { createdAt: 'desc' },
-    });
-  }
+  if (bestsellers.length >= 4) return bestsellers;
 
-  return products;
+  // Supplement with other active products until we have at least 6
+  const needed = 6 - bestsellers.length;
+  const existingIds = bestsellers.map((p) => p.id);
+  const additional = await prisma.product.findMany({
+    where: {
+      isActive: true,
+      ...(existingIds.length > 0 && { id: { notIn: existingIds } }),
+    },
+    take: needed,
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return [...bestsellers, ...additional];
 }
 
 const routineSteps = [
@@ -291,7 +292,7 @@ export default async function HomePage() {
             </div>
 
             {/* Slider de productos */}
-            <ProductSlider products={bestSellers} autoSlide={true} slideInterval={4000} />
+            <ProductSlider products={bestSellers} autoSlide={true} slideInterval={4000} desktopSlideInterval={15000} />
 
             <div className="mt-8 lg:hidden text-center">
               <Link
@@ -557,17 +558,7 @@ export default async function HomePage() {
               <span className="text-primary font-bold">10% de descuento</span> en
               tu primera compra.
             </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                className="input-field flex-1"
-                placeholder="Tu correo electrónico"
-                required
-              />
-              <button type="submit" className="btn-primary">
-                Suscribirme
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </section>
       </main>

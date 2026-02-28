@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import MiniCart from '@/components/layout/MiniCart';
 import BannerDisplay from '@/components/ui/BannerDisplay';
+import QuizFloatingButton from '@/components/quiz/QuizFloatingButton';
 import { Toaster } from 'sonner';
 
 const spaceGrotesk = Space_Grotesk({
@@ -93,6 +94,7 @@ export default function RootLayout({
           <BannerDisplay />
           {children}
           <MiniCart />
+          <QuizFloatingButton />
           <Toaster
             position="bottom-center"
             toastOptions={{

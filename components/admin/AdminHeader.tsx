@@ -35,7 +35,7 @@ export default function AdminHeader() {
     return 'Panel de Administración';
   };
 
-  const adminEmail = 'admin@glowseoul.co'; // Could be fetched from auth context
+  const adminEmail = 'admin@kbeauty.com'; // Could be fetched from auth context
 
   return (
     <header className="bg-white border-b border-accent-light/30 px-6 py-4">

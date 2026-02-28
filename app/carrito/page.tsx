@@ -30,7 +30,7 @@ export default function CarritoPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-12 w-full min-h-screen">
+      <main className="flex-grow max-w-7xl mx-auto px-6 pb-12 pt-24 w-full min-h-screen">
         {/* Header */}
         <header className="mb-12">
           <span className="text-accent text-sm tracking-widest uppercase mb-2 block font-medium">

@@ -6,8 +6,10 @@ import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { useCartStore } from '@/lib/stores/useCartStore';
 import type { Product } from '@/lib/data/products';
+import type { Recommendation } from '@/lib/recommendations/engine';
 
 const routineSteps = [
   { icon: 'water_drop', label: 'Limpiar', active: false },
@@ -25,7 +27,19 @@ export default function ProductoPage() {
   const [productData, setProductData] = useState<Product | null>(null);
   const [relatedProductsList, setRelatedProductsList] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recLoading, setRecLoading] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
+
+  const handleAddToCart = (product: Product, qty: number) => {
+    addItem(product, qty);
+    if (window.innerWidth < 768) {
+      toast.success('¡Añadido al carrito!', { description: product.name });
+    } else {
+      openCart();
+    }
+  };
 
   useEffect(() => {
     async function fetchProduct() {
@@ -46,6 +60,20 @@ export default function ProductoPage() {
                 .slice(0, 4);
               setRelatedProductsList(related);
             }
+          }
+
+          // Fetch K-Beauty recommendations
+          setRecLoading(true);
+          try {
+            const recResponse = await fetch(`/api/recommendations?productId=${params.id}&limit=3`);
+            if (recResponse.ok) {
+              const recs = await recResponse.json();
+              setRecommendations(recs);
+            }
+          } catch {
+            // silently fail
+          } finally {
+            setRecLoading(false);
           }
         }
       } catch (error) {
@@ -70,7 +98,7 @@ export default function ProductoPage() {
     return (
       <>
         <Navbar />
-        <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl min-h-screen flex items-center justify-center">
+        <main className="flex-grow container mx-auto px-6 pb-12 pt-24 max-w-7xl min-h-screen flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary mb-4"></div>
             <p className="text-accent">Cargando producto...</p>
@@ -86,7 +114,7 @@ export default function ProductoPage() {
     return (
       <>
         <Navbar />
-        <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl min-h-screen flex items-center justify-center">
+        <main className="flex-grow container mx-auto px-6 pb-12 pt-24 max-w-7xl min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-primary mb-4">
               Producto no encontrado
@@ -111,7 +139,7 @@ export default function ProductoPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
+      <main className="flex-grow container mx-auto px-6 pb-12 pt-24 max-w-7xl">
         {/* Breadcrumb */}
         <nav className="text-xs uppercase tracking-widest text-accent mb-8">
           <Link href="/" className="hover:text-primary transition-colors">
@@ -160,7 +188,7 @@ export default function ProductoPage() {
                 alt={productData.name}
                 width={800}
                 height={1000}
-                className="w-full h-[500px] lg:h-[600px] object-cover"
+                className="w-full h-[400px] lg:h-[480px] object-cover"
                 priority
               />
               {productData.badge && (
@@ -242,7 +270,7 @@ export default function ProductoPage() {
 
               {/* Add to Cart */}
               <button
-                onClick={() => addItem(productData, quantity)}
+                onClick={() => handleAddToCart(productData, quantity)}
                 className="flex-grow h-12 bg-secondary text-primary font-bold text-lg rounded hover:brightness-95 hover:shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <span>Añadir al carrito</span>
@@ -394,49 +422,100 @@ export default function ProductoPage() {
           </div>
         </div>
 
-        {/* Cross Sell Section */}
+        {/* K-Beauty Recommendations Section */}
         <section className="mt-24 mb-12 border-t border-primary/10 pt-12">
-          <h2 className="text-3xl text-primary text-center mb-12 font-medium italic">
-            Completa tu ritual
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {relatedProductsList.map((product) => (
-              <Link
-                key={product.id}
-                href={`/producto/${product.id}`}
-                className="group cursor-pointer"
-              >
-                <div className="overflow-hidden rounded-lg mb-4 bg-white/40 relative">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={400}
-                    height={500}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      addItem(product, 1);
-                    }}
-                    className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow-sm hover:bg-secondary transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <span className="material-icons text-primary">
-                      add
-                    </span>
-                  </button>
-                </div>
-                <h3 className="text-lg text-primary group-hover:text-secondary transition-colors">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-accent mb-2">{product.brand}</p>
-                <p className="text-primary font-medium">
-                  {formatPrice(product.price)}
-                </p>
-              </Link>
-            ))}
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <span className="material-icons text-secondary">auto_awesome</span>
+            <h2 className="text-3xl text-primary text-center font-medium italic">
+              Completa tu rutina
+            </h2>
+            <span className="bg-secondary/20 text-primary text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+              Recomendado para ti
+            </span>
           </div>
+          <p className="text-center text-accent text-sm mb-10">
+            Basado en la rutina coreana de 8 pasos
+          </p>
+
+          {recLoading ? (
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-secondary"></div>
+              <p className="text-accent text-sm">Buscando complementos ideales...</p>
+            </div>
+          ) : recommendations.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recommendations.map(({ product: rec, reason, step }) => (
+                <div key={rec.id} className="group flex flex-col bg-white/40 rounded-xl border border-primary/10 overflow-hidden hover:shadow-lg transition-shadow">
+                  <Link href={`/producto/${rec.id}`} className="relative overflow-hidden block">
+                    <Image
+                      src={rec.image}
+                      alt={rec.name}
+                      width={400}
+                      height={300}
+                      className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 bg-secondary text-primary text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm">
+                      {step}
+                    </span>
+                  </Link>
+                  <div className="p-5 flex flex-col flex-1">
+                    <Link href={`/producto/${rec.id}`}>
+                      <h3 className="text-base font-semibold text-primary group-hover:text-secondary transition-colors leading-tight line-clamp-2 mb-1">
+                        {rec.name}
+                      </h3>
+                    </Link>
+                    <p className="text-xs text-accent uppercase tracking-wider mb-2">{rec.brand}</p>
+                    <p className="text-lg font-bold text-primary mb-3">{formatPrice(rec.price)}</p>
+                    <div className="bg-secondary/10 border border-secondary/20 rounded-lg px-3 py-2.5 mb-4 flex-1">
+                      <p className="text-xs text-primary/80 italic leading-relaxed">{reason}</p>
+                    </div>
+                    <button
+                      onClick={() => handleAddToCart(rec as unknown as Product, 1)}
+                      className="w-full bg-secondary text-primary font-bold text-sm py-2.5 rounded-lg hover:brightness-95 hover:shadow-md transition-all flex items-center justify-center gap-2"
+                    >
+                      <span className="material-icons text-base">add_shopping_cart</span>
+                      <span>Añadir al carrito</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {relatedProductsList.map((product) => (
+                <Link
+                  key={product.id}
+                  href={`/producto/${product.id}`}
+                  className="group cursor-pointer"
+                >
+                  <div className="overflow-hidden rounded-lg mb-4 bg-white/40 relative">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={400}
+                      height={500}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleAddToCart(product, 1);
+                      }}
+                      className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow-sm hover:bg-secondary transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      <span className="material-icons text-primary">add</span>
+                    </button>
+                  </div>
+                  <h3 className="text-lg text-primary group-hover:text-secondary transition-colors">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm text-accent mb-2">{product.brand}</p>
+                  <p className="text-primary font-medium">{formatPrice(product.price)}</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </main>
 

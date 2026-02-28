@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { prisma } from '@/lib/prisma';
 import { getStripeClient } from '@/lib/stripe/server';
 
 export async function GET(request: NextRequest) {
@@ -14,11 +14,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Crear clientes de Stripe y Supabase
-    const stripe = getStripeClient();
-    const supabase = createServerSupabaseClient();
-
     // Obtener la sesión de Stripe
+    const stripe = getStripeClient();
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (!session) {
@@ -28,57 +25,39 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Buscar la orden por el session ID
-    const { data: order, error: findError } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('wompi_reference', sessionId) // Estamos reutilizando este campo
-      .single();
+    // Buscar la orden por el session ID de Stripe
+    const order = await prisma.order.findFirst({
+      where: { paymentId: sessionId },
+    });
 
-    if (findError || !order) {
-      console.error('Error al buscar orden:', findError);
+    if (!order) {
       return NextResponse.json(
         { error: 'Orden no encontrada' },
         { status: 404 }
       );
     }
 
-    // Determinar el estado del pago basado en el estado de la sesión
     const paymentStatus =
-      session.payment_status === 'paid'
-        ? 'approved'
-        : session.payment_status === 'unpaid'
-        ? 'pending'
-        : 'declined';
+      session.payment_status === 'paid' ? 'paid' :
+      session.payment_status === 'unpaid' ? 'pending' : 'failed';
 
     const orderStatus =
       session.payment_status === 'paid' ? 'processing' : order.status;
 
-    // Actualizar la orden en Supabase
-    const { error: updateError } = await supabase
-      .from('orders')
-      .update({
-        payment_status: paymentStatus,
+    // Actualizar la orden en Prisma
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        paymentStatus,
         status: orderStatus,
-        wompi_transaction_id: session.payment_intent as string, // Payment Intent ID
-        payment_method: 'card', // Stripe usa tarjeta
-        paid_at: session.payment_status === 'paid' ? new Date().toISOString() : null,
-      })
-      .eq('id', order.id);
+        paymentMethod: 'stripe',
+      },
+    });
 
-    if (updateError) {
-      console.error('Error al actualizar orden:', updateError);
-      return NextResponse.json(
-        { error: 'Error al actualizar la orden' },
-        { status: 500 }
-      );
-    }
-
-    // Retornar resultado
     return NextResponse.json({
       success: true,
       orderId: order.id,
-      orderNumber: order.order_number,
+      orderNumber: order.orderNumber,
       paymentStatus,
       sessionStatus: session.status,
       message:

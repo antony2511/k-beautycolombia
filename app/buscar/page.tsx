@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
@@ -14,7 +14,7 @@ const Footer = dynamic(() => import('@/components/layout/Footer'), {
   loading: () => <div className="h-96" />,
 });
 
-export default function BuscarPage() {
+function BuscarContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
   const [products, setProducts] = useState<Product[]>([]);
@@ -80,7 +80,7 @@ export default function BuscarPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-12 w-full min-h-screen">
+      <main className="flex-grow max-w-7xl mx-auto px-6 pb-12 pt-24 w-full min-h-screen">
         {/* Header con barra de búsqueda */}
         <header className="mb-12">
           <div className="mb-6">
@@ -253,5 +253,15 @@ export default function BuscarPage() {
 
       <Footer />
     </>
+  );
+}
+
+export default function BuscarPage() {
+  return (
+    <Suspense fallback={
+      <><Navbar /><div className="flex justify-center items-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div></>
+    }>
+      <BuscarContent />
+    </Suspense>
   );
 }

@@ -9,17 +9,28 @@ const updateProductSchema = z.object({
   name: z.string().min(3).optional(),
   brand: z.string().min(2).optional(),
   price: z.number().positive().optional(),
-  compareAtPrice: z.number().positive().optional().nullable(),
-  image: z.string().url().optional(),
-  images: z.array(z.string().url()).max(4).optional().nullable(),
-  badge: z.string().optional().nullable(),
-  badgeType: z.enum(['bestseller', 'new', 'discount']).optional().nullable(),
-  category: z.string().optional().nullable(),
-  description: z.string().optional().nullable(),
-  benefits: z.array(z.string()).optional().nullable(),
-  ingredients: z.array(z.string()).optional().nullable(),
-  howToUse: z.array(z.string()).optional().nullable(),
-  skinType: z.array(z.string()).optional().nullable(),
+  compareAtPrice: z.number().min(0).optional().nullable()
+    .or(z.literal(0))
+    .transform((val) => (val === 0 ? null : val)),
+  image: z.string().min(1).optional(),
+  images: z.array(z.string()).max(4).optional().nullable()
+    .transform((val) => (Array.isArray(val) && val.length === 0 ? null : val)),
+  badge: z.string().optional().nullable()
+    .or(z.literal('')).transform((val) => (val === '' ? null : val)),
+  badgeType: z.enum(['bestseller', 'new', 'discount']).optional().nullable()
+    .or(z.literal('')).transform((val) => (val === '' ? null : val)),
+  category: z.string().optional().nullable()
+    .or(z.literal('')).transform((val) => (val === '' ? null : val)),
+  description: z.string().optional().nullable()
+    .or(z.literal('')).transform((val) => (val === '' ? null : val)),
+  benefits: z.array(z.string()).optional().nullable()
+    .transform((val) => (Array.isArray(val) && val.length === 0 ? null : val)),
+  ingredients: z.array(z.string()).optional().nullable()
+    .transform((val) => (Array.isArray(val) && val.length === 0 ? null : val)),
+  howToUse: z.array(z.string()).optional().nullable()
+    .transform((val) => (Array.isArray(val) && val.length === 0 ? null : val)),
+  skinType: z.array(z.string()).optional().nullable()
+    .transform((val) => (Array.isArray(val) && val.length === 0 ? null : val)),
   stock: z.number().int().min(0).optional(),
   isActive: z.boolean().optional(),
 });
@@ -118,13 +129,12 @@ export async function PATCH(
   }
 }
 
-// DELETE - Soft delete (marcar como inactivo)
+// DELETE - Hard delete con limpieza de relaciones
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verificar autenticación admin
     const cookieStore = await cookies();
     const token = cookieStore.get('admin_token')?.value;
 
@@ -134,9 +144,9 @@ export async function DELETE(
 
     const { id } = await params;
 
-    // Verificar que el producto existe
     const existingProduct = await prisma.product.findUnique({
       where: { id },
+      include: { _count: { select: { orderItems: true } } },
     });
 
     if (!existingProduct) {
@@ -146,16 +156,21 @@ export async function DELETE(
       );
     }
 
-    // Soft delete (marcar como inactivo)
-    const product = await prisma.product.update({
-      where: { id },
-      data: { isActive: false },
-    });
+    // Bloquear si hay órdenes reales con este producto
+    if (existingProduct._count.orderItems > 0) {
+      return NextResponse.json(
+        { error: 'No se puede eliminar: el producto tiene órdenes asociadas. Puedes desactivarlo en su lugar.' },
+        { status: 409 }
+      );
+    }
 
-    return NextResponse.json({
-      message: 'Producto eliminado exitosamente',
-      product,
-    });
+    // Borrar en transacción: primero KitItems, luego el producto
+    await prisma.$transaction([
+      prisma.kitItem.deleteMany({ where: { productId: id } }),
+      prisma.product.delete({ where: { id } }),
+    ]);
+
+    return NextResponse.json({ message: 'Producto eliminado exitosamente' });
   } catch (error) {
     console.error('Error eliminando producto:', error);
     return NextResponse.json(

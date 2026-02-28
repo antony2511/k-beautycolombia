@@ -62,19 +62,24 @@ export default function ProductosPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
 
     try {
       const response = await fetch(`/api/admin/products/${id}`, {
         method: 'DELETE',
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         fetchProducts();
+      } else {
+        alert(data.error || 'Error al eliminar el producto');
       }
     } catch (error) {
       console.error('Error deleting product:', error);
+      alert('Error de conexión al eliminar el producto');
     }
   };
 
@@ -134,16 +139,16 @@ export default function ProductosPage() {
     {
       header: 'Acciones',
       accessorKey: 'id' as keyof Product,
-      cell: (row: Product) => (
+      cell: ({ row }: { row: { original: Product } }) => (
         <div className="flex gap-2">
           <Link
-            href={`/admin/productos/editar/${row.id}`}
+            href={`/admin/productos/editar/${row.original.id}`}
             className="text-sm text-secondary hover:text-secondary-dark font-medium"
           >
             Editar
           </Link>
           <button
-            onClick={() => handleDelete(row.id)}
+            onClick={() => handleDelete(row.original.id, row.original.name)}
             className="text-sm text-red-600 hover:text-red-700 font-medium"
           >
             Eliminar

@@ -92,7 +92,7 @@ export default function CheckoutPage() {
     <>
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-12 w-full min-h-screen">
+      <main className="flex-grow max-w-7xl mx-auto px-6 pb-12 pt-24 w-full min-h-screen">
         {/* Breadcrumb */}
         <nav className="text-xs uppercase tracking-widest text-accent mb-8">
           <Link href="/" className="hover:text-primary transition-colors">

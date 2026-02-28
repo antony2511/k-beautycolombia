@@ -36,39 +36,28 @@ export async function POST(request: Request) {
     }
 
     // Validar tamaño (máximo 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
+    if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: 'El archivo es demasiado grande. Máximo 5MB' },
         { status: 400 }
       );
     }
 
-    // Generar nombre único para el archivo
-    const extension = file.name.split('.').pop();
+    // Generar nombre único
+    const extension = (file.name.split('.').pop() ?? 'jpg').toLowerCase();
     const filename = `${uuidv4()}.${extension}`;
 
-    // Crear directorio si no existe
-    const uploadDir = path.join(process.cwd(), 'public', 'products');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (error) {
-      // El directorio ya existe, continuar
-    }
+    // Guardar en uploads/products/ (fuera de public/, servido dinámicamente)
+    const uploadDir = path.join(process.cwd(), 'uploads', 'products');
+    await mkdir(uploadDir, { recursive: true });
 
-    // Convertir archivo a buffer y guardar
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    await writeFile(path.join(uploadDir, filename), Buffer.from(bytes));
 
-    const filepath = path.join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-
-    // Retornar URL pública
-    const url = `/products/${filename}`;
-
+    // URL servida por /api/media/[filename]
     return NextResponse.json({
       message: 'Imagen subida exitosamente',
-      url,
+      url: `/api/media/${filename}`,
     });
   } catch (error) {
     console.error('Error subiendo imagen:', error);

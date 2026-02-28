@@ -13,7 +13,7 @@ import {
   limit,
 } from 'firebase/firestore';
 import { db } from './config';
-import type { UserProfile, SavedAddress } from '@/types';
+import type { UserProfile, SavedAddress, SkinProfile } from '@/types';
 import type { Product } from '@/lib/data/products';
 
 // ============================================================================
@@ -51,6 +51,23 @@ export const updateUserProfile = async (userId: string, data: Partial<UserProfil
     ...data,
     updated_at: new Date().toISOString(),
   });
+};
+
+export const saveSkinProfile = async (userId: string, profile: SkinProfile): Promise<void> => {
+  const userRef = doc(db, 'users', userId);
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+    await updateDoc(userRef, {
+      skinProfile: profile,
+      updated_at: new Date().toISOString(),
+    });
+  } else {
+    await setDoc(userRef, {
+      skinProfile: profile,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+  }
 };
 
 // ============================================================================

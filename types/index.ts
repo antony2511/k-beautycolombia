@@ -149,6 +149,16 @@ export interface WompiTransaction {
 }
 
 // Auth types
+export interface SkinProfile {
+  skinType: string;
+  isSensible: boolean;
+  concerns: string[];
+  preferredTexture: string;
+  ageRange: string;
+  routineComplexity: string;
+  savedAt: string;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -156,6 +166,7 @@ export interface UserProfile {
   avatar_url?: string;
   created_at: string;
   updated_at: string;
+  skinProfile?: SkinProfile;
 }
 
 export interface SavedAddress {
